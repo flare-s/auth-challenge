@@ -28,11 +28,6 @@ server.post("/log-out", logout.post);
 server.get("/confessions/:user_id", confessions.get);
 server.post("/confessions/:user_id", body, confessions.post);
 
-// server.get("/product/:id", product.get);
-// server.get("/search", search.get);
-// server.get("/new", add.get);
-// server.post("/new", express.urlencoded({ extended: false }), add.post);
-
 function sessions(req, res, next) {
   const sid = req.signedCookies.sid;
   const session = getSession(sid);

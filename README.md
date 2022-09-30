@@ -280,3 +280,71 @@ function post(req, res) {
 ```
 
 </details>
+
+## Challenge 7 (stretch goal): sessions middleware
+
+Your app should now have quite a lot of repeated logic to access the current session. For example the `home.js`, `confessions.js` and `log-out.js` handlers all follow the same process (read the cookie, get the session). It would be nice to abstract this code into an Express middleware, so it can just happen once.
+
+1. Write a new middleware function in `server.js`
+1. It should take 3 arguments, `req`, `res` and `next`
+1. Read the signed cookie to get the session ID
+1. Get the session from the DB
+1. If the session exists attach it to the `req` object
+1. Always call the `next` function to pass the request on to the next handler in the queue
+1. Tell Express to use the middleware before every request
+
+<details>
+<summary>Show solution</summary>
+
+```js
+server.use(sessions);
+
+function sessions(req, res, next) {
+  const sid = req.signedCookies.sid;
+  const session = getSession(sid);
+  if (session) {
+    req.session = session;
+  }
+  next();
+}
+```
+
+</details>
+
+Now you can edit any handlers that access the session to use `req.session` instead of reading it from the cookie/DB themselves. E.g for `log-out.js`:
+
+```js
+function post(req, res) {
+  removeSession(req.session.id);
+  res.clearCookie("sid");
+  res.redirect("/");
+}
+```
+
+Ideally if a session has expired we want to remove the session and cookie. Centralising this logic also means you can handle expiry in one place, rather than having to copy it to everywhere you read the cookie.
+
+1. Edit the middleware to check the sessions `expires_at` property
+1. If this date is prior to the current date then remove the session from the DB and delete the cookie
+
+<details>
+<summary>Show solution</summary>
+
+```js
+function sessions(req, res, next) {
+  const sid = req.signedCookies.sid;
+  const session = getSession(sid);
+  if (session) {
+    const expiry = new Date(session.expires_at);
+    const today = new Date();
+    if (expiry < today) {
+      removeSession(sid);
+      res.clearCookie("sid");
+    } else {
+      req.session = session;
+    }
+  }
+  next();
+}
+```
+
+</details>
