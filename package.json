@@ -6,7 +6,9 @@
     "test:1": "DB_FILE=test.sqlite COOKIE_SECRET=abc node --no-warnings test/1.test.js",
     "test:2": "DB_FILE=test.sqlite COOKIE_SECRET=abc node --no-warnings test/2.test.js",
     "test:3": "DB_FILE=test.sqlite COOKIE_SECRET=abc node --no-warnings test/3.test.js",
-    "test:4": "DB_FILE=test.sqlite COOKIE_SECRET=abc node --no-warnings test/4.test.js"
+    "test:4": "DB_FILE=test.sqlite COOKIE_SECRET=abc node --no-warnings test/4.test.js",
+    "test:5": "DB_FILE=test.sqlite COOKIE_SECRET=abc node --no-warnings test/5.test.js",
+    "test:6": "DB_FILE=test.sqlite COOKIE_SECRET=abc node --no-warnings test/6.test.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

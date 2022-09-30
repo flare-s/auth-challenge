@@ -40,7 +40,7 @@ function get(req, res) {
 function post(req, res) {
   const current_user = req.session && req.session.user_id;
   if (!req.body.content || !current_user) {
-    return res.status(400).send("<h1>Confession failed</h1>");
+    return res.status(401).send("<h1>Confession failed</h1>");
   }
   createConfession(req.body.content, current_user);
   res.redirect(`/confessions/${current_user}`);

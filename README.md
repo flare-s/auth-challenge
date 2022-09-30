@@ -129,7 +129,7 @@ function post(req, res) {
 The app currently has no way to log in to an existing account. There is a log in form at `GET /log-in`, but you need to fill out the `POST /log-in` handler to make this feature work.
 
 1. Use `getUserByEmail` from `model/user.js` to get the user who is trying to log in
-1. If there's no user with that email send an error response
+1. If there's no user with that email send a `400` error response
 1. Compare the submitted password to the stored user's hash
 1. If they don't match send the same error response
 
@@ -219,6 +219,63 @@ function post(req, res) {
   removeSession(sid);
   res.clearCookie("sid");
   res.redirect("/");
+}
+```
+
+</details>
+
+## Challenge 5: hide confessions
+
+Now that you've got user accounts working you need to make sure each user's confessions page is protected. Only the user who owns the page should be able to see it. Edit the `GET /confessions/:user_id` handler to make this work.
+
+1. Get the session ID from the signed cookie
+1. Use the `getSession` function from `model/session.js` to get the session from the DB
+1. Get the logged in user's ID from the session
+1. Get the page owner from the URL params
+1. If the logged in user is not the page owner send a `401` error response
+
+<details>
+<summary>Show solution</summary>
+
+```js
+function get(req, res) {
+  const sid = req.signedCookies.sid;
+  const session = getSession(sid);
+  const current_user = session && session.user_id;
+  const page_owner = Number(req.params.user_id);
+  if (current_user !== page_owner) {
+    return res.status(401).send("<h1>You aren't allowed to see that</h1>");
+  }
+  // ...
+}
+```
+
+</details>
+
+## Challenge 6: protect confession submission
+
+Currently anyone can send a request to e.g. `POST /confessions/8` to create confessions on that user's page. This is bad! We can't rely on the URL params for this—we can only trust the user ID in the cookie. Confessions should always submit to the logged in user's account.
+
+1. Get the session ID from the signed cookie
+1. Get the session from the DB
+1. Get the logged in user's ID from the session
+1. If there is no logged in user send a `401` error
+1. Use this user ID to create the confession in the DB
+1. Redirect back to the logged in user's confession page
+
+<details>
+<summary>Show solution</summary>
+
+```js
+function post(req, res) {
+  const sid = req.signedCookies.sid;
+  const session = getSession(sid);
+  const current_user = session && session.user_id;
+  if (!req.body.content || !current_user) {
+    return res.status(401).send("<h1>Confession failed</h1>");
+  }
+  createConfession(req.body.content, current_user);
+  res.redirect(`/confessions/${current_user}`);
 }
 ```
 
