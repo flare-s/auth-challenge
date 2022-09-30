@@ -95,7 +95,7 @@ The app currently has no way to sign up for a new account. There is a sign up fo
 1. Use the `bcryptjs` library to hash the password the user submitted
 1. Use the `createUser` function from `model/user.js` to insert a new user into the DB
 1. Use the `createSession` function you wrote to insert a new session into the DB
-1. Set a signed cookie containing the session ID
+1. Set a signed `sid` cookie containing the session ID
 1. Redirect to the new user's confession page (e.g. `/confessions/11`)
 
 <details>
@@ -121,3 +121,50 @@ function post(req, res) {
   }
 }
 ```
+
+</details>
+
+## Challenge 3: log in
+
+The app currently has no way to log in to an existing account. There is a log in form at `GET /log-in`, but you need to fill out the `POST /log-in` handler to make this feature work.
+
+1. Use `getUserByEmail` from `model/user.js` to get the user who is trying to log in
+1. If there's no user with that email send an error response
+1. Compare the submitted password to the stored user's hash
+1. If they don't match send the same error response
+
+   **Important:** don't say exactly what went wrong, otherwise you'll give attackers information like which emails have accounts in your app
+
+1. If they match use the `createSession` function you wrote to insert a new session into the DB
+1. Set a signed `sid` cookie containing the session ID
+1. Redirect to the new user's confession page (e.g. `/confessions/11`)
+
+<details>
+<summary>Show solution</summary>
+
+```js
+function post(req, res) {
+  const { email, password } = req.body;
+  const user = getUserByEmail(email);
+  if (!email || !password || !user) {
+    return res.status(400).send("<h1>Login failed</h1>");
+  }
+  bcrypt.compare(password, user.hash).then((match) => {
+    if (!match) {
+      // Same error as above so attacker doesn't know if email exists or password is wrong
+      return res.status(400).send("<h1>Login failed</h1>");
+    } else {
+      const session_id = createSession(user.id);
+      res.cookie("sid", session_id, {
+        signed: true,
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+        sameSite: "lax",
+        httpOnly: true,
+      });
+      res.redirect(`/confessions/${user.id}`);
+    }
+  });
+}
+```
+
+</details>

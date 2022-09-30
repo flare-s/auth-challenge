@@ -6,7 +6,6 @@ const { createUser, getUserByEmail } = require(`../${DIR}/model/user.js`);
 const { getSession, createSession } = require(`../${DIR}/model/session.js`);
 
 function _reset(table) {
-  console.log(`Resetting ${table} in ${db.name}`);
   db.exec(/*sql*/ `
     DELETE FROM ${table};
     DELETE FROM sqlite_sequence WHERE name='${table}';

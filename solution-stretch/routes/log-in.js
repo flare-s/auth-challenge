@@ -33,7 +33,7 @@ function post(req, res) {
   }
   bcrypt.compare(password, user.hash).then((match) => {
     if (!match) {
-      return res.redirect("/log-in");
+      return res.status(400).send("<h1>Login failed</h1>");
     } else {
       const session_id = createSession(user.id);
       res.cookie("sid", session_id, {
