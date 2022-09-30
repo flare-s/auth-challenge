@@ -29,6 +29,7 @@ function post(req, res) {
   if (!email || !password || !user) {
     return res.status(400).send("<h1>Login failed</h1>");
   }
+  res.send("to-do");
   /**
    * [1] Compare submitted password to stored hash
    * [2] If no match redirect back to same page so user can retry

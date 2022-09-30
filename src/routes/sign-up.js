@@ -27,6 +27,7 @@ function post(req, res) {
   if (!email || !password) {
     res.status(400).send("Bad input");
   } else {
+    res.send("to-do");
     /**
      * [1] Hash the password
      * [2] Create the user in the DB
