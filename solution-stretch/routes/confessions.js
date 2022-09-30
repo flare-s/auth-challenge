@@ -2,13 +2,10 @@ const {
   listConfessions,
   createConfession,
 } = require("../model/confessions.js");
-const { getSession } = require("../model/session.js");
 const { Layout } = require("../templates.js");
 
 function get(req, res) {
-  const sid = req.signedCookies.sid;
-  const session = getSession(sid);
-  const current_user = session && session.user_id;
+  const current_user = req.session && req.session.user_id;
   const page_owner = Number(req.params.user_id);
   if (current_user !== page_owner) {
     return res.status(401).send("<h1>You aren't allowed to see that</h1>");
@@ -41,9 +38,7 @@ function get(req, res) {
 }
 
 function post(req, res) {
-  const sid = req.signedCookies.sid;
-  const session = getSession(sid);
-  const current_user = session && session.user_id;
+  const current_user = req.session && req.session.user_id;
   if (!req.body.content || !current_user) {
     return res.status(400).send("<h1>Confession failed</h1>");
   }
