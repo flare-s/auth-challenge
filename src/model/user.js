@@ -18,12 +18,4 @@ function getUserByEmail(email) {
   return select_user_by_email.get(email);
 }
 
-const select_user_by_id = db.prepare(/*sql*/ `
-  SELECT id, email, hash, created_at FROM users WHERE id = ?
-`);
-
-function getUserById(id) {
-  return select_user_by_id.get(id);
-}
-
-module.exports = { createUser, getUserByEmail, getUserById };
+module.exports = { createUser, getUserByEmail };
