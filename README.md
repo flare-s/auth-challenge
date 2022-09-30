@@ -88,3 +88,36 @@ function createSession(user_id) {
 
 </details>
 
+## Challenge 2: sign up
+
+The app currently has no way to sign up for a new account. There is a sign up form at `GET /sign-up`, but you need to fill out the `POST /sign-up` handler to make this feature work.
+
+1. Use the `bcryptjs` library to hash the password the user submitted
+1. Use the `createUser` function from `model/user.js` to insert a new user into the DB
+1. Use the `createSession` function you wrote to insert a new session into the DB
+1. Set a signed cookie containing the session ID
+1. Redirect to the new user's confession page (e.g. `/confessions/11`)
+
+<details>
+<summary>Show solution</summary>
+
+```js
+function post(req, res) {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400).send("Bad input");
+  } else {
+    bcrypt.hash(password, 12).then((hash) => {
+      const user = createUser(email, hash);
+      const session_id = createSession(user.id);
+      res.cookie("sid", session_id, {
+        signed: true,
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+        sameSite: "lax",
+        httpOnly: true,
+      });
+      res.redirect(`/confessions/${user.id}`);
+    });
+  }
+}
+```
