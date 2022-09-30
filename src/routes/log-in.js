@@ -1,6 +1,4 @@
-const bcrypt = require("bcryptjs");
 const { getUserByEmail } = require("../model/user.js");
-const { createSession } = require("../model/session.js");
 const { Layout } = require("../templates.js");
 
 function get(req, res) {
@@ -36,7 +34,7 @@ function post(req, res) {
    * [2] If no match redirect back to same page so user can retry
    * [3] If match create a session with their user ID,
    *     set a cookie with the session ID,
-   *     redirect back to home page
+   *     redirect to the user's confession page (e.g. /confessions/3)
    */
 }
 

@@ -42,7 +42,7 @@ function post(req, res) {
         sameSite: "lax",
         httpOnly: true,
       });
-      res.redirect("/");
+      res.redirect(`/confessions/${user.id}`);
     }
   });
 }

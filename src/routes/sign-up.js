@@ -1,6 +1,3 @@
-const bcrypt = require("bcryptjs");
-const { createUser } = require("../model/user.js");
-const { createSession } = require("../model/session.js");
 const { Layout } = require("../templates.js");
 
 function get(req, res) {
@@ -35,7 +32,7 @@ function post(req, res) {
      * [2] Create the user in the DB
      * [3] Create the session with the new user's ID
      * [4] Set a cookie with the session ID
-     * [5] Redirect back to home page
+     * [5] Redirect to the user's confession page (e.g. /confessions/3)
      */
   }
 }
