@@ -17,7 +17,7 @@ function get(req, res) {
       <h1>${title}</h1>
       <form method="POST" class="Stack" style="--gap: 0.5rem">
         <textarea name="content" aria-label="your confession" rows="4" cols="30" style="resize: vertical"></textarea>
-        <button>Confess 🤫</button>
+        <button class="Button">Confess 🤫</button>
       </form>
       <ul class="Center Stack">
         ${confessions
