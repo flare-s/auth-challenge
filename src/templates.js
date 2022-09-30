@@ -61,18 +61,21 @@ const styles = /*css*/ `
     --bg-dim: hsl(var(--hue), 10%, 95%);
     --accent: hsl(var(--hue), 50%, 50%);
     accent-color: var(--accent);
+    font-size: 125%;
   }
 
   body {
     margin: 0;
     font-family: ui-serif, serif;
+    line-height: 1.6;
     color: var(--text);
     background-color: var(--bg-light);
   }
 
   button,
   label,
-  input {
+  input,
+  textarea {
     font: inherit;
     color: inherit;
   }
@@ -110,6 +113,11 @@ const styles = /*css*/ `
     display: grid;
     place-content: center;
     place-items: center;
+  }
+
+  .Center {
+    max-inline-size: var(--size, 40rem);
+    margin-inline: auto;
   }
 
 `;

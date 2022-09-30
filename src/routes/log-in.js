@@ -27,25 +27,24 @@ function get(req, res) {
 
 function post(req, res) {
   const { email, password } = req.body;
-  if (!email || !password) {
-    res.status(400).send("Bad input");
-  } else {
-    const user = getUserByEmail(email);
-    bcrypt.compare(password, user.hash).then((match) => {
-      if (!match) {
-        return res.redirect("/log-in");
-      } else {
-        const session_id = createSession(user.id);
-        res.cookie("sid", session_id, {
-          signed: true,
-          maxAge: 1000 * 60 * 60 * 24 * 7,
-          sameSite: "lax",
-          httpOnly: true,
-        });
-        res.redirect("/");
-      }
-    });
+  const user = getUserByEmail(email);
+  if (!email || !password || !user) {
+    return res.status(400).send("<h1>Login failed</h1>");
   }
+  bcrypt.compare(password, user.hash).then((match) => {
+    if (!match) {
+      return res.redirect("/log-in");
+    } else {
+      const session_id = createSession(user.id);
+      res.cookie("sid", session_id, {
+        signed: true,
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+        sameSite: "lax",
+        httpOnly: true,
+      });
+      res.redirect("/");
+    }
+  });
 }
 
 module.exports = { get, post };

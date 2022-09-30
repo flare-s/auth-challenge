@@ -1,9 +1,13 @@
-const { listConfessions } = require("../model/confessions.js");
+const {
+  listConfessions,
+  createConfession,
+} = require("../model/confessions.js");
 const { Layout } = require("../templates.js");
 
 function get(req, res) {
   const current_user = req.session && req.session.user_id;
-  if (current_user !== req.params.user_id) {
+  const page_owner = Number(req.params.user_id);
+  if (current_user !== page_owner) {
     return res.status(401).send("<h1>You aren't allowed to see that</h1>");
   }
   const confessions = listConfessions(req.params.user_id);
@@ -11,9 +15,20 @@ function get(req, res) {
   const content = /*html*/ `
     <div class="Cover">
       <h1>${title}</h1>
-      <ul>
+      <form method="POST" class="Stack" style="--gap: 0.5rem">
+        <textarea name="content" aria-label="your confession" rows="4" cols="30" style="resize: vertical"></textarea>
+        <button>Confess 🤫</button>
+      </form>
+      <ul class="Center Stack">
         ${confessions
-          .map((entry) => `<li>${entry.created_at}<br>${entry.content}</li>`)
+          .map(
+            (entry) => `
+            <li>
+              <h2>${entry.created_at}</h2>
+              <p>${entry.content}</p>
+            </li>
+            `
+          )
           .join("")}
       </ul>
     </div>
@@ -22,4 +37,13 @@ function get(req, res) {
   res.send(body);
 }
 
-module.exports = { get };
+function post(req, res) {
+  const current_user = req.session && req.session.user_id;
+  if (!req.body.content || !current_user) {
+    return res.status(400).send("<h1>Confession failed</h1>");
+  }
+  createConfession(req.body.content, current_user);
+  res.redirect(`/confessions/${current_user}`);
+}
+
+module.exports = { get, post };
