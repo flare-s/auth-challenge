@@ -168,3 +168,58 @@ function post(req, res) {
 ```
 
 </details>
+
+## Challenge 4: log out button
+
+This app stores sensitive user info, so it's important to let them log out. You'll need to add a log out button to the `GET /`, but only visible when they're logged in.
+
+1. Read the session ID from the signed cookie
+1. Get the session from the DB
+1. If the session exists render a log out form that submits a request to `POST /log-out`
+1. Else render the sign up/log in links
+
+<details>
+<summary>Show solution</summary>
+
+```js
+function get(req, res) {
+  const sid = req.signedCookies.sid;
+  const session = getSession(sid);
+  const title = "Confess your secrets!";
+  const content = /*html*/ `
+    <div class="Cover">
+      <h1>${title}</h1>
+      ${
+        session
+          ? /*html*/ `<form method="POST" action="/log-out"><button class="Button">Log out</button></form>`
+          : /*html*/ `<nav><a href="/sign-up">Sign up</a> or <a href="/log-in">log in</a></nav>`
+      }
+    </div>
+  `;
+  const body = Layout({ title, content });
+  res.send(body);
+}
+```
+
+</details>
+
+Then you need to edit the `POST /log-out` handler to make this work.
+
+1. Get the session ID from the signed cookie
+1. Use the `removeSession` function from `model/session.js` to delete the session from the DB
+1. Clear the `sid` cookie
+1. Redirect back to the homepage
+
+<details>
+<summary>Show solution</summary>
+
+```js
+function post(req, res) {
+  const sid = req.signedCookies.sid;
+  removeSession(sid);
+  res.clearCookie("sid");
+  res.redirect("/");
+}
+```
+
+</details>
