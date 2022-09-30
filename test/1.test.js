@@ -8,7 +8,7 @@ const {
 } = require("./helpers.js");
 
 test("createSession can insert a new session", async () => {
-  reset.users();
+  reset();
 
   const user = createUser("x@test.com", "abc");
   const sid = createSession(user.id);

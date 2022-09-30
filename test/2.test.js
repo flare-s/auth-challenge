@@ -9,7 +9,7 @@ const {
 } = require("./helpers.js");
 
 test("POST /sign-up creates new user", async () => {
-  reset.users();
+  reset();
 
   const { status, headers } = await request("/sign-up", {
     method: "POST",

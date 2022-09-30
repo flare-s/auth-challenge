@@ -1,25 +1,19 @@
-const DIR = "src";
+const DIR = "solution";
 
 const server = require(`../${DIR}/server.js`);
 const db = require(`../${DIR}/database/db.js`);
 const { createUser, getUserByEmail } = require(`../${DIR}/model/user.js`);
 const { getSession, createSession } = require(`../${DIR}/model/session.js`);
+const { listConfessions } = require(`../${DIR}/model/confessions.js`);
 
-function _reset(table) {
+function reset() {
   db.exec(/*sql*/ `
-    DELETE FROM ${table};
-    DELETE FROM sqlite_sequence WHERE name='${table}';
+    DELETE FROM confessions;
+    DELETE FROM sessions;
+    DELETE FROM users;
+    DELETE FROM sqlite_sequence WHERE name IN ('confessions', 'sessions', 'users');
   `);
 }
-
-const reset = {
-  users: () => {
-    _reset("sessions");
-    _reset("users");
-  },
-  sessions: () => _reset("sessions"),
-  confessions: () => _reset("confessions"),
-};
 
 async function request(pathname, options = {}) {
   const app = server.listen(0);
@@ -45,6 +39,7 @@ module.exports = {
   getUserByEmail,
   getSession,
   createSession,
+  listConfessions,
   request,
   get_sid,
 };

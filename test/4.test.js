@@ -10,7 +10,7 @@ const {
 } = require("./helpers.js");
 
 test("POST /log-out deletes session and clears cookie", async () => {
-  reset.users();
+  reset();
   const hash = await bcrypt.hash("abc", 12);
   createUser("x@test.com", hash);
 

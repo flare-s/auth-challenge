@@ -10,7 +10,7 @@ const {
 } = require("./helpers.js");
 
 test("POST /log-in creates new session", async () => {
-  reset.users();
+  reset();
   const hash = await bcrypt.hash("abc", 12);
   createUser("x@test.com", hash);
 
@@ -50,7 +50,7 @@ test("POST /log-in creates new session", async () => {
 });
 
 test("POST /log-in with wrong email returns error", async () => {
-  reset.users();
+  reset();
   const hash = await bcrypt.hash("abc", 12);
   createUser("x@test.com", hash);
 
@@ -69,7 +69,7 @@ test("POST /log-in with wrong email returns error", async () => {
 });
 
 test("POST /log-in with incorrect password returns error", async () => {
-  reset.users();
+  reset();
   const hash = await bcrypt.hash("abc", 12);
   createUser("x@test.com", hash);
 
