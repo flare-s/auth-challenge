@@ -60,4 +60,31 @@ This app let's users store their private confessions. It has tables for users, s
 
 </details>
 
-## Challenge 1: sign up
+## Challenge 1: create sessions
+
+Before you start implementing features you need a way to create new sessions in the DB. Fill out the `createSession` function in `src/model/session.js`. It should:
+
+1. Take the user's ID as an argument
+1. Generate a strong, long, random string to use as the session ID
+1. Insert a new session into the database (including the user ID)
+1. Ensure the `expires_at` column is set to a time in the future
+1. Return the generated ID (this will be needed to store in a cookie later)
+
+<details>
+<summary>Show solution</summary>
+
+```js
+const insert_session = db.prepare(/*sql*/ `
+  INSERT INTO sessions (id, user_id, expires_at)
+  VALUES ($id, $user_id, DATE('now', '+7 days'))
+`);
+
+function createSession(user_id) {
+  const id = crypto.randomBytes(18).toString("base64");
+  insert_session.run({ id, user_id });
+  return id;
+}
+```
+
+</details>
+

@@ -1,16 +1,9 @@
-const crypto = require("node:crypto");
 const db = require("../database/db.js");
 
-const insert_session = db.prepare(`
-  INSERT INTO sessions (id, user_id, expires_at)
-  VALUES ($id, $user_id, DATE('now', '+7 days'))`);
+const insert_session = db.prepare(`SELECT 1`);
 
 function createSession(user_id) {
-  // quick way to generate a random string in Node
-  const id = crypto.randomBytes(18).toString("base64");
-  insert_session.run({ id, user_id });
-  // return the generated ID so we can store in a cookie
-  return id;
+  // to-do
 }
 
 const select_session = db.prepare(`
