@@ -126,6 +126,8 @@ function post(req, res) {
 
 ## Challenge 3: log in
 
+---
+
 The app currently has no way to log in to an existing account. There is a log in form at `GET /log-in`, but you need to fill out the `POST /log-in` handler to make this feature work.
 
 1. Use `getUserByEmail` from `model/user.js` to get the user who is trying to log in
