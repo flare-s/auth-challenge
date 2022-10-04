@@ -1,6 +1,6 @@
 const { Layout } = require("../templates.js");
 const bcrypt = require("bcryptjs");
-const { createUser } = require("../model/user");
+const { createUser, getUserByEmail } = require("../model/user");
 const { createSession } = require("../model/session");
 
 function get(req, res) {
@@ -38,16 +38,21 @@ function post(req, res) {
      * [4] Set a cookie with the session ID
      * [5] Redirect to the user's confession page (e.g. /confessions/3)
      */
-    bcrypt.hash(password, 12).then((hash) => {
-      const user = createUser(email, hash);
-      const sid = createSession(user.id);
-      res.cookie("sid", sid, {
-        signed: true,
-        httpOnly: true,
-        sameSite: "lax",
+    const doesUserExists = getUserByEmail(email);
+    if (doesUserExists) {
+      res.status(400).send("EXISTS");
+    } else {
+      bcrypt.hash(password, 12).then((hash) => {
+        const user = createUser(email, hash);
+        const sid = createSession(user.id);
+        res.cookie("sid", sid, {
+          signed: true,
+          httpOnly: true,
+          sameSite: "lax",
+        });
+        res.redirect(`/confessions/${user.id}`);
       });
-      res.redirect(`/confessions/${user.id}`);
-    });
+    }
   }
 }
 
